@@ -21,4 +21,17 @@ fn main() {
     let b = a.unwrap();
     let c: serde_json::Value = serde_json::from_str(&b).unwrap();
     println!("{}", c[0]);
+
+    let a = k_sha256("hello world".to_string());
+    println!("{}", a);
+    println!("{:#?}", a);
+
+    let a = k_write("test.txt".to_string(), a);
+    match a {
+        Ok(()) => println!("File written successfully!"),
+        Err(e) => println!("Failed to write to file: {}", e),
+    }
+
+    let b = k_read("test.txt".to_string()).unwrap();
+    println!("{}", b);
 }
