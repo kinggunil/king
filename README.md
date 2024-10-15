@@ -8,6 +8,7 @@ serde_json = "1.0"
 rand = "0.8.5"
 chrono = "0.4.38"
 reqwest = { version = "0.11", features = ["blocking"] }
+sha2 = "0.10"
 ```
 
 ```rust
