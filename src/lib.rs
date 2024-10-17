@@ -1,4 +1,3 @@
-
 use rand::Rng;
 pub fn k_rand(min: i64, max: i64) -> i64 {
     let mut rng = rand::thread_rng();
@@ -79,7 +78,6 @@ pub fn k_datetime(unix_time: u64) -> String {
     local_time.format("%Y-%m-%d %H:%M:%S").to_string()
 }
 
-
 use std::time::Instant;
 static mut START_TIME: Option<Instant> = None;
 
@@ -95,9 +93,9 @@ pub fn k_toc() {
             let duration = start.elapsed();
             println!("\nElapsed time: {:?}\n", duration);
         } else {
-            println!("Error: kson_tic() was not called.");
+            println!("Error: k_tic() was not called.");
         }
-        START_TIME = None;  // Reset START_TIME
+        START_TIME = None; // Reset START_TIME
     }
 }
 
@@ -120,8 +118,7 @@ fn main() {
 }
  */
 
-
-use sha2::{Sha256, Digest};
+use sha2::{Digest, Sha256};
 /// 입력값으로 `String`을 받아서 SHA-256 해시 값을 계산하는 함수
 pub fn k_sha256(input: String) -> String {
     // 새로운 Sha256 해시 객체 생성
@@ -138,16 +135,16 @@ pub fn k_sha256(input: String) -> String {
 }
 
 use std::fs::File;
-use std::io::{Write, Read};
+use std::io::{Read, Write};
 
 /// 파일에 데이터를 쓰는 함수 (파일명과 데이터를 String 타입으로 받음)
 pub fn k_write(file_name: String, data: String) -> std::io::Result<()> {
     // 파일을 생성하거나 열기 (쓰기 모드)
     let mut file = File::create(file_name)?;
-    
+
     // 데이터를 파일에 쓰기
     file.write_all(data.as_bytes())?;
-    
+
     Ok(())
 }
 
@@ -155,12 +152,112 @@ pub fn k_write(file_name: String, data: String) -> std::io::Result<()> {
 pub fn k_read(file_name: String) -> std::io::Result<String> {
     // 파일 열기 (읽기 모드)
     let mut file = File::open(file_name)?;
-    
+
     // 파일 내용을 담을 String 생성
     let mut contents = String::new();
-    
+
     // 파일에서 데이터를 읽어 contents에 저장
     file.read_to_string(&mut contents)?;
-    
+
     Ok(contents)
+}
+
+#[macro_export]
+macro_rules! kset {
+    // 변수를 초기화할 때 사용
+    ($var:ident) => {
+        let mut $var = serde_json::json!({});
+    };
+
+    // 키-값 쌍을 설정할 때 사용
+    ($var:ident $( [ $key:expr ] )+ = $value:expr) => {{
+        let mut temp = &mut $var;
+        $(
+            let key = $key;
+            temp = {
+                if let Some(index) = key.to_string().parse::<usize>().ok() {
+                    if !temp.is_array() {
+                        *temp = serde_json::json!([]);
+                    }
+                    let arr = temp.as_array_mut().unwrap();
+                    if arr.len() <= index {
+                        arr.resize(index + 1, serde_json::Value::Null);
+                    }
+                    &mut arr[index]
+                } else {
+                    let key_str = key.to_string();
+                    if !temp.is_object() {
+                        *temp = serde_json::json!({});
+                    }
+                    temp.as_object_mut().unwrap()
+                        .entry(key_str)
+                        .or_insert_with(|| serde_json::Value::Null)
+                }
+            };
+        )*
+        *temp = serde_json::json!($value);
+    }};
+
+}
+
+#[macro_export]
+macro_rules! kget {
+    // Handle String conversion
+    ($expr:expr => String) => {{
+        if let Some(s) = $expr.as_str() {
+            s.to_string()
+        } else if let Some(n) = $expr.as_i64() {
+            n.to_string()
+        } else if let Some(n) = $expr.as_f64() {
+            n.to_string()
+        } else if let Some(b) = $expr.as_bool() {
+            b.to_string()
+        } else {
+            panic!(concat!("Cannot convert ", stringify!($expr), " to String"))
+        }
+    }};
+
+    // Handle i64 conversion
+    ($expr:expr => i64) => {{
+        if let Some(n) = $expr.as_i64() {
+            n
+        } else if let Some(s) = $expr.as_str() {
+            s.parse::<i64>()
+                .expect(concat!("Cannot parse ", stringify!($expr), " as i64"))
+        } else {
+            panic!(concat!("Cannot convert ", stringify!($expr), " to i64"))
+        }
+    }};
+
+    // Handle f64 conversion
+    ($expr:expr => f64) => {{
+        if let Some(n) = $expr.as_f64() {
+            n
+        } else if let Some(n) = $expr.as_i64() {
+            n as f64
+        } else if let Some(s) = $expr.as_str() {
+            s.parse::<f64>()
+                .expect(concat!("Cannot parse ", stringify!($expr), " as f64"))
+        } else {
+            panic!(concat!("Cannot convert ", stringify!($expr), " to f64"))
+        }
+    }};
+
+    // Handle bool conversion
+    ($expr:expr => bool) => {{
+        if let Some(b) = $expr.as_bool() {
+            b
+        } else if let Some(s) = $expr.as_str() {
+            s.parse::<bool>()
+                .expect(concat!("Cannot parse ", stringify!($expr), " as bool"))
+        } else {
+            panic!(concat!("Cannot convert ", stringify!($expr), " to bool"))
+        }
+    }};
+
+    // Fallback for types that implement Deserialize
+    ($expr:expr => $type:ty) => {{
+        serde_json::from_value::<$type>($expr.clone())
+            .expect(concat!("Failed to convert value to ", stringify!($type)))
+    }};
 }

@@ -34,4 +34,61 @@ fn main() {
 
     let b = k_read("test.txt".to_string()).unwrap();
     println!("{}", b);
+
+    kset!(a);
+    kset!(a["name"]="kinggunil");
+    kset!(a["age"]=20);
+    println!("{:#?}", a);
+    
+    kset!(b);
+    kset!(b[0]="test0");
+    kset!(b[1]="test1");
+    kset!(b[2]="test2");
+    println!("{:#?}", b);
+
+    kset!(c);
+    kset!(c["age"]["korean"]=20);
+    kset!(c["age"]["usa"]=18);
+    kset!(c["age"]["test"]["aa"][0]=77);
+    println!("{:#?}", c);
+
+    kset!(d);
+    kset!(d[0][0]=20);
+    kset!(d[0][1]=30);
+    kset!(d[1][0]=40);
+    kset!(d[1][1]=50);
+    println!("{:#?}", d);
+
+
+    println!("{:#?}",kget!(b[0] => String));
+    println!("{:#?}",kget!(b[0] => String));
+    println!("{:#?}",kget!(a["age"] => String));
+    println!("{:#?}",10000+kget!(c["age"]["test"]["aa"][0] => i32));
+    println!("{:#?}",kget!(d[0][1] => i64));
+    println!("{:#?}",kget!(d[0][1] => i64));
+/*
+    결과값
+    Object {
+        "age": Number(20),
+        "name": String("kinggunil"),
+    }
+    Array [
+        String("test0"),
+        String("test1"),
+        String("test2"),
+    ]
+    Object {
+        "age": Object {
+            "korean": Number(20),
+            "usa": Number(18),
+        },
+    }
+
+kget!(b[0] => String) 으로 하면 String 타입으로 test0가 출력되고
+kget!(a["age"]=>i64)로 하면 i64로 20이 출력되고
+kget!(c["age"]["usa"]=>i64)로 하면 i64로 18이 출력되는 
+kget!을 하면 어떤 타입이 오던 무조건적으로 =>뒤의 타입으로 강제 변환될수 있게 해줘    
+kget! 메크로 작성해줘
+
+*/
 }
