@@ -168,14 +168,14 @@ pub fn k_read(file_name: String) -> std::io::Result<String> {
 
 #[macro_export]
 macro_rules! kset {
-    // []를 사용할 때 객체로 초기화
-    ($var:ident []) => {
-        let mut $var = serde_json::json!({});
-    };
+    // // []를 사용할 때 객체로 초기화
+    // ($var:ident []) => {
+    //     let mut $var = serde_json::json!({});
+    // };
 
     // 변수를 serde_json::Value 타입으로 선언할 때
     ($var:ident) => {
-        let mut $var: serde_json::Value;
+        let mut $var = serde_json::json!({});
     };
 
     // [] 없이 바로 키-값 쌍을 설정할 때 사용

@@ -35,24 +35,24 @@ fn main() {
     let b = k_read("test.txt".to_string()).unwrap();
     println!("{}", b);
 
-    kset!(a[]);
+    kset!(a);
     kset!(a["name"]="kinggunil");
     kset!(a["age"]=20);
     println!("{:#?}", a);
     
-    kset!(b[]);
+    kset!(b);
     kset!(b[0]="test0");
     kset!(b[1]="test1");
     kset!(b[2]="test2");
     println!("{:#?}", b);
 
-    kset!(c[]);
+    kset!(c);
     kset!(c["age"]["korean"]=20);
     kset!(c["age"]["usa"]=18);
     kset!(c["age"]["test"]["aa"][0]=77);
     println!("{:#?}", c);
 
-    kset!(d[]);
+    kset!(d);
     kset!(d[0][0]=20);
     kset!(d[0][1]=30);
     kset!(d[1][0]=40);
@@ -61,8 +61,9 @@ fn main() {
 
 
     kset!(ab);
-    kset!(ab = "test");
-    println!("*test : {:#?}", kget!(ab => String));
+    kset!(ab["data"] = "test");
+    println!("{:#?}", ab["data"]);
+    println!("*test : {:#?}", kget!(ab["data"] => String));
     
 
 
@@ -98,7 +99,7 @@ fn main() {
     ]
     ]"#;
     let json2:Value=serde_json::from_str(json).unwrap();
-    kset!(e[]);
+    kset!(e);
     kset!(e["data"]=json2);
     println!("{:#?}",e);
     println!("{:#?}",kget!(e["data"][0][0] => i64));
