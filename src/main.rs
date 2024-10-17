@@ -26,13 +26,13 @@ fn main() {
     println!("{}", a);
     println!("{:#?}", a);
 
-    let a = k_write("test.txt".to_string(), a);
+    let a = k_write("test.txt", a);
     match a {
         Ok(()) => println!("File written successfully!"),
         Err(e) => println!("Failed to write to file: {}", e),
     }
 
-    let b = k_read("test.txt".to_string()).unwrap();
+    let b = k_read("test.txt").unwrap();
     println!("{}", b);
 
     kset!(a);

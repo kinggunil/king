@@ -2,7 +2,7 @@
 
 ```toml
 [dependencies]
-king = "0.2.3"
+king = "0.2.4"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 rand = "0.8.5"

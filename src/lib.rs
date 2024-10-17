@@ -138,7 +138,7 @@ use std::fs::File;
 use std::io::{Read, Write};
 
 /// 파일에 데이터를 쓰는 함수 (파일명과 데이터를 String 타입으로 받음)
-pub fn k_write(file_name: String, data: String) -> std::io::Result<()> {
+pub fn k_write(file_name: &str, data: String) -> std::io::Result<()> {
     // 파일을 생성하거나 열기 (쓰기 모드)
     let mut file = File::create(file_name)?;
 
@@ -149,7 +149,7 @@ pub fn k_write(file_name: String, data: String) -> std::io::Result<()> {
 }
 
 /// 파일에서 데이터를 읽는 함수 (파일명을 String 타입으로 받음)
-pub fn k_read(file_name: String) -> std::io::Result<String> {
+pub fn k_read(file_name: &str) -> std::io::Result<String> {
     // 파일 열기 (읽기 모드)
     let mut file = File::open(file_name)?;
 
