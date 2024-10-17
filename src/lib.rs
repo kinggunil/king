@@ -175,7 +175,7 @@ macro_rules! kset {
 
     // 변수를 serde_json::Value 타입으로 선언할 때
     ($var:ident) => {
-        let $var: serde_json::Value;
+        let mut $var: serde_json::Value;
     };
 
     // [] 없이 바로 키-값 쌍을 설정할 때 사용
