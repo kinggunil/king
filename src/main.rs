@@ -1,5 +1,5 @@
 use king::*;
-
+use serde_json::*;
 fn main() {
     let a = k_time();
     println!("{}", a);
@@ -35,30 +35,73 @@ fn main() {
     let b = k_read("test.txt".to_string()).unwrap();
     println!("{}", b);
 
-    kset!(a);
+    kset!(a[]);
     kset!(a["name"]="kinggunil");
     kset!(a["age"]=20);
     println!("{:#?}", a);
     
-    kset!(b);
+    kset!(b[]);
     kset!(b[0]="test0");
     kset!(b[1]="test1");
     kset!(b[2]="test2");
     println!("{:#?}", b);
 
-    kset!(c);
+    kset!(c[]);
     kset!(c["age"]["korean"]=20);
     kset!(c["age"]["usa"]=18);
     kset!(c["age"]["test"]["aa"][0]=77);
     println!("{:#?}", c);
 
-    kset!(d);
+    kset!(d[]);
     kset!(d[0][0]=20);
     kset!(d[0][1]=30);
     kset!(d[1][0]=40);
     kset!(d[1][1]=50);
     println!("{:#?}", d);
 
+
+    kset!(ab);
+    kset!(ab = "test");
+    println!("*test : {:#?}", kget!(ab => String));
+    
+
+
+    let json=r#"
+    [
+    [
+        1729135620000,
+        "67537.51000000",
+        "67557.51000000",
+        "67532.00000000",
+        "67557.51000000",
+        "5.31780000",
+        1729135679999,
+        "359153.94242100",
+        1206,
+        "3.90923000",
+        "264023.00093650",
+        "0"
+    ],
+    [
+        1729135680000,
+        "67557.51000000",
+        "67589.98000000",
+        "67547.63000000",
+        "67585.53000000",
+        "11.46317000",
+        1729135739999,
+        "774529.23389550",
+        1325,
+        "8.21896000",
+        "555303.87791390",
+        "0"
+    ]
+    ]"#;
+    let json2:Value=serde_json::from_str(json).unwrap();
+    kset!(e[]);
+    kset!(e["data"]=json2);
+    println!("{:#?}",e);
+    println!("{:#?}",kget!(e["data"][0][0] => i64));
 
     println!("{:#?}",kget!(b[0] => String));
     println!("{:#?}",kget!(b[0] => String));
